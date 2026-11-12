@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sevilla 2027">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f4f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d131e" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Sevilla 2027 Trainingsplan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one phone-width column. The day's session is the page; the week strip sits above it and the plan switch stays in reach. */
+:root{
+  --bg:#f2f4f8; --surface:#ffffff; --ink:#141e30; --muted:#586479; --line:#dbe1ea;
+  --accent:#1d4bb8; --accent-soft:#e5ebfa; --on-accent:#ffffff;
+  --easy:#3c5a82; --easy-soft:#e7edf5;
+  --q:#c9530f; --q-soft:#fdeee2;
+  --long:#1b7450; --long-soft:#e2f2ea;
+  --key:#946a05; --key-soft:#f8eed0;
+  --race:#ad2038; --race-soft:#fbe5e9;
+  --font-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --font-body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d131e; --surface:#161f2e; --ink:#e8edf6; --muted:#99a5ba; --line:#28344a;
+    --accent:#86a6ff; --accent-soft:#1b2947; --on-accent:#0d131e;
+    --easy:#a3bbdb; --easy-soft:#1c293c;
+    --q:#ff9c61; --q-soft:#382314;
+    --long:#62d1a2; --long-soft:#142e27;
+    --key:#e7c15a; --key-soft:#31280f;
+    --race:#ff8296; --race-soft:#39171f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d131e; --surface:#161f2e; --ink:#e8edf6; --muted:#99a5ba; --line:#28344a;
+  --accent:#86a6ff; --accent-soft:#1b2947; --on-accent:#0d131e;
+  --easy:#a3bbdb; --easy-soft:#1c293c;
+  --q:#ff9c61; --q-soft:#382314;
+  --long:#62d1a2; --long-soft:#142e27;
+  --key:#e7c15a; --key-soft:#31280f;
+  --race:#ff8296; --race-soft:#39171f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:640px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.num{font-variant-numeric:tabular-nums}
+.label{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand-name{font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.05;letter-spacing:.01em}
+.brand-sub{font-size:13px;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:3px;gap:3px}
+.seg button{border:0;background:transparent;border-radius:7px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;line-height:1.15;font-weight:600;font-size:14px}
+.seg button small{font-weight:500;font-size:11px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.seg button[aria-pressed="true"] small{color:var(--on-accent);opacity:.85}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tabs a{flex:1;text-align:center;padding:9px 6px;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+.banner{background:var(--accent-soft);border-radius:10px;padding:10px 12px;font-size:14px}
+
+.weekhead{display:flex;align-items:center;gap:8px}
+.weekhead .meta{flex:1;min-width:0;text-align:center}
+.weekhead .range{font-family:var(--font-display);font-weight:600;font-size:21px;line-height:1.15}
+.iconbtn{flex:none;width:40px;height:40px;border:1px solid var(--line);background:var(--surface);border-radius:10px;font-size:20px;line-height:1}
+.iconbtn:disabled{opacity:.35;cursor:default}
+
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 2px 0;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;overflow:hidden}
+.chip .dow{font-size:11px;color:var(--muted);font-weight:600}
+.chip .dd{font-family:var(--font-display);font-weight:600;font-size:19px;line-height:1.1}
+.chip .ckm{font-size:11px;color:var(--muted)}
+.chip .bar{align-self:stretch;height:4px;margin-top:5px;background:var(--t)}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.chip.today .dd{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.t-easy{--t:var(--easy);--ts:var(--easy-soft)}
+.t-q{--t:var(--q);--ts:var(--q-soft)}
+.t-long{--t:var(--long);--ts:var(--long-soft)}
+.t-key{--t:var(--key);--ts:var(--key-soft)}
+.t-race{--t:var(--race);--ts:var(--race-soft)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.cardtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.cardtop .when{min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.date{font-family:var(--font-display);font-weight:600;font-size:24px;line-height:1.1;text-wrap:balance}
+.pill{display:inline-block;background:var(--ts);color:var(--t);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:3px 10px}
+/* the day's kilometres, worn like a start number: four pin holes in the corners */
+.bib{flex:none;min-width:92px;text-align:center;background:
+  radial-gradient(circle at 9px 9px,var(--surface) 2.5px,transparent 3px),
+  radial-gradient(circle at calc(100% - 9px) 9px,var(--surface) 2.5px,transparent 3px),
+  radial-gradient(circle at 9px calc(100% - 9px),var(--surface) 2.5px,transparent 3px),
+  radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),var(--surface) 2.5px,transparent 3px),
+  var(--ts);
+  color:var(--t);border-radius:8px;padding:8px 14px 9px}
+.bib .n{font-family:var(--font-display);font-weight:700;font-size:46px;line-height:1}
+.bib .u{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;display:block}
+.part{display:flex;flex-direction:column;gap:6px}
+.part + .part{border-top:1px dashed var(--line);padding-top:12px}
+.head{font-weight:600;font-size:16px}
+.single{margin:0;font-size:16px}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:6px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:16px}
+.steps li::before{content:counter(s);font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--t);background:var(--ts);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;margin-top:1px}
+.pace{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{background:var(--bg);border-radius:8px;padding:9px 11px;font-size:14px}
+.other{border:1px dashed var(--line);border-radius:12px;padding:11px 13px;font-size:14px;display:flex;flex-direction:column;gap:3px}
+.other .otop{display:flex;justify-content:space-between;gap:10px}
+.other.same{color:var(--muted)}
+.daynav{display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
+.daynav button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;font-weight:600;font-size:14px}
+.daynav button:disabled{opacity:.35;cursor:default}
+.daynav .today{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec p{margin:0;max-width:65ch}
+.sec ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.act{color:var(--accent);font-weight:600}
+.zones td.num{white-space:nowrap}
+
+.wlist{display:flex;flex-direction:column;gap:8px}
+.wrow{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:86px minmax(0,1fr);gap:4px 12px;text-align:left;width:100%}
+.wrow.cur{border-color:var(--accent)}
+.wrow .wn{font-family:var(--font-display);font-weight:700;font-size:24px;line-height:1}
+.wrow .wr{font-size:12px;color:var(--muted);white-space:nowrap}
+.wrow .lr{grid-column:2;font-size:13px;color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:0}
+.barline{display:grid;grid-template-columns:14px minmax(0,1fr) 34px;gap:6px;align-items:center;font-size:12px}
+.barline .track{height:9px;border-radius:5px;background:var(--bg);overflow:hidden}
+.barline .fill{height:100%;border-radius:5px;background:var(--muted);opacity:.45}
+.barline.on .fill{background:var(--accent);opacity:1}
+.barline.on{font-weight:600}
+.barline .v{text-align:right;font-variant-numeric:tabular-nums}
+.legend{font-size:13px;color:var(--muted)}
+.onlyB[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="brand-name">Sevilla 2027</span>
+      <span class="brand-sub num" id="status">Marathon am 21.02.2027</span>
+    </div>
+    <div class="seg" role="group" aria-label="Plan wählen">
+      <button type="button" id="plan-a" data-plan="A" aria-pressed="true">Plan A<small>Ziel 2:28</small></button>
+      <button type="button" id="plan-b" data-plan="B" aria-pressed="false">Plan B<small>Ziel 2:26</small></button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Ansicht">
+    <a href="#tag" data-view="tag">Tag</a>
+    <a href="#wochen" data-view="wochen">Wochen</a>
+    <a href="#regeln" data-view="regeln">Regeln</a>
+  </nav>
+
+  <section id="view-tag" class="sec" style="gap:14px">
+    <div class="banner" id="banner" hidden></div>
+    <div class="weekhead">
+      <button type="button" class="iconbtn" id="wk-prev" aria-label="Vorige Woche">‹</button>
+      <div class="meta">
+        <div class="label" id="wk-label"></div>
+        <div class="range num" id="wk-range"></div>
+      </div>
+      <button type="button" class="iconbtn" id="wk-next" aria-label="Nächste Woche">›</button>
+    </div>
+    <div class="strip" id="strip"></div>
+    <article class="card" id="card"></article>
+    <div class="other" id="other"></div>
+    <div class="daynav">
+      <button type="button" id="day-prev">‹ Vortag</button>
+      <button type="button" id="day-today" class="today">Heute</button>
+      <button type="button" id="day-next">Folgetag ›</button>
+    </div>
+  </section>
+
+  <section id="view-wochen" class="sec" style="gap:16px" hidden>
+    <div class="sec">
+      <h2>Plan A und Plan B im Vergleich</h2>
+      <div class="scroll"><table id="cmp"></table></div>
+    </div>
+    <div class="sec">
+      <h2>Die 11 Wochen</h2>
+      <p class="legend">Balken: Wochenkilometer in Plan A und B. Der Text nennt den Sonntag im gewählten Plan. Tippe eine Woche an, um sie zu öffnen.</p>
+      <div class="wlist" id="wlist"></div>
+    </div>
+  </section>
+
+  <section id="view-regeln" class="sec" style="gap:18px" hidden>
+    <div class="sec">
+      <h2>Tempo- und Herzfrequenzbereiche</h2>
+      <div class="scroll"><table class="zones">
+        <tr><th>Bereich</th><th>Tempo</th><th>HF</th></tr>
+        <tr><td>Sehr locker (Abend, Samstag)</td><td class="num">4:30–4:50/km</td><td class="num">115–130</td></tr>
+        <tr><td>Locker</td><td class="num">4:10–4:35/km</td><td class="num">125–140</td></tr>
+        <tr><td>MRT Plan A</td><td class="num">3:28–3:31/km</td><td class="num">156–163</td></tr>
+        <tr><td>MRT Plan B</td><td class="num">3:27–3:29/km</td><td class="num">156–163</td></tr>
+        <tr><td>Schwelle (T)</td><td class="num">3:15–3:20/km</td><td class="num">163–169</td></tr>
+        <tr><td>Intervall</td><td class="num">3:05–3:10/km</td><td>–</td></tr>
+      </table></div>
+      <p class="legend">EL = Einlaufen, AL = Auslaufen, T = Schwellentempo, MRT = Marathon-Renntempo. Zwischen Vormittags- und Abendlauf liegen mindestens 6 Stunden. Jeder Long Run ab 28 km und jede MRT-Einheit wird mit Flüssigkeit gelaufen.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Kontrollpunkte</h2>
+      <div class="scroll"><table>
+        <tr><th>Wann</th><th>Öffnet 2:26</th><th>Sonst 2:28</th></tr>
+        <tr><td>10-km-Testlauf<br><span class="legend num">So 24.01.</span></td><td class="num">≤ 32:30</td><td class="num">32:30–33:30</td></tr>
+        <tr><td>Generalprobe<br><span class="legend num">So 31.01.</span></td><td class="num">≤ 3:28/km, HF ≤ 163, Drift ≤ 5 bpm</td><td class="num">3:29–3:32/km oder Drift &gt; 5 bpm</td></tr>
+      </table></div>
+      <p>Renntempo 3:28/km (2:26:15) nur, wenn beide Kontrollpunkte passen. Sonst 3:30/km (2:27:40). Das gilt für Plan A und Plan B.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Renntag 21.02.</h2>
+      <div class="scroll"><table>
+        <tr><th>Abschnitt</th><th>Ziel 2:28</th><th>Ziel 2:26</th></tr>
+        <tr><td>km 0–5</td><td class="num">3:31–3:32/km</td><td class="num">3:31/km</td></tr>
+        <tr><td>km 5–30</td><td class="num">3:30/km</td><td class="num">3:28/km</td></tr>
+        <tr><td>Halbmarathon</td><td class="num">1:14:00–1:14:15</td><td class="num">1:13:15</td></tr>
+        <tr><td>30 km</td><td class="num">1:45:10</td><td class="num">1:44:20</td></tr>
+        <tr><td>Ab km 30</td><td class="num">halten oder 3:28</td><td class="num">halten oder 3:26</td></tr>
+        <tr><td>Ziel</td><td class="num">2:27:30–2:28:00</td><td class="num">2:26:00–2:26:30</td></tr>
+      </table></div>
+      <p>Die ersten 5 km nicht schneller als 3:31/km. Gruppe suchen, nicht führen.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Tagesregeln</h2>
+      <ol>
+        <li>HRV unter dem 7-Tage-Mittel und Ruhepuls über 40: Abendlauf und Samstagslauf entfallen.</li>
+        <li>Zweiter Tag in Folge so: Q-Einheit durch 12 km locker ersetzen, nicht verschieben.</li>
+        <li>Erkältung mit Halsschmerzen oder Fieber: kein Lauf bis 24 h symptomfrei, dann zwei lockere Tage.</li>
+        <li>Q-Einheiten werden nie auf den Samstag gelegt.</li>
+        <li>MRT-Blöcke, die sich leicht anfühlen, werden nicht schneller gelaufen, sondern um 1 km verlängert.</li>
+      </ol>
+    </div>
+
+    <div class="sec">
+      <h2>Plan A oder Plan B</h2>
+      <p>Woche 1 und 2 sind identisch. Entscheidung am 20.12. nach dem 30-km-Lauf. Plan B nur, wenn alle vier Punkte zutreffen:</p>
+      <ol>
+        <li>In Japan mindestens 60 km pro Woche und beide Long Runs gelaufen.</li>
+        <li>Kein Infekt seit der Rückkehr.</li>
+        <li>Schlaf an mindestens fünf von sieben Nächten 7 h oder mehr.</li>
+        <li>Der 30-km-Lauf blieb im lockeren Teil bei HF ≤ 140.</li>
+      </ol>
+      <p>Von B zurück zu A geht jederzeit, von A zu B bis Anfang Woche 5.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Wechsel von Plan B zurück zu A</h2>
+      <p>Für den Rest des Blocks gilt Plan A, sobald einer dieser Fälle eintritt:</p>
+      <ol>
+        <li>Zwei Q-Einheiten innerhalb von zehn Tagen wegen HRV, Ruhepuls oder Schlaf gestrichen.</li>
+        <li>Ein MRT-Block bei 3:28–3:29/km nur mit HF über 165 haltbar oder abgebrochen.</li>
+        <li>Infekt mit drei oder mehr lauffreien Tagen.</li>
+        <li>Schlaf an mehr als drei Nächten pro Woche unter 6,5 h, zwei Wochen in Folge.</li>
+        <li>10-km-Testlauf über 33:00.</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<script>
+const PLANS = {"A":{"weeks":[{"n":1,"range":"07.–13.12.","km":105,"note":"","phase":"Wiederaufbau","mrt":0,"lr":"26 km locker","days":[{"d":"2026-12-07","dow":"Mo","text":"10 km sehr locker, HF ≤ 130","note":"","km":10.0,"type":"easy"},{"d":"2026-12-08","dow":"Di","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2026-12-09","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-10","dow":"Do","text":"4 km EL + 5×1000 m in 3:12–3:15 (400 m Trab) + 2 km AL","note":"","km":13.0,"type":"q"},{"d":"2026-12-11","dow":"Fr","text":"14 km locker + 6 Steigerungen","note":"","km":14.0,"type":"easy"},{"d":"2026-12-12","dow":"Sa","text":"6 km sehr locker, HF ≤ 130","note":"","km":6.0,"type":"easy"},{"d":"2026-12-13","dow":"So","text":"26 km locker, 4:15–4:35/km, HF ≤ 140, mit Flüssigkeit","note":"","km":26.0,"type":"long"}]},{"n":2,"range":"14.–20.12.","km":122,"note":"","phase":"Wiederaufbau","mrt":0,"lr":"30 km locker","days":[{"d":"2026-12-14","dow":"Mo","text":"AM 12 km locker · PM 8 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2026-12-15","dow":"Di","text":"4 km EL + 6×1000 m in 3:08–3:12 (400 m Trab) + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2026-12-16","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-17","dow":"Do","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2026-12-18","dow":"Fr","text":"4 km EL + 8 km T in 3:18–3:20 + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2026-12-19","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2026-12-20","dow":"So","text":"30 km locker, letzte 6 km 3:50–4:00/km, mit Flüssigkeit","note":"","km":30.0,"type":"long"}]},{"n":3,"range":"21.–27.12.","km":133,"note":"erste MRT-Blöcke, Weihnachten","phase":"Wiederaufbau","mrt":10,"lr":"30 km, 2×5 km MRT","days":[{"d":"2026-12-21","dow":"Mo","text":"AM 14 km locker · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2026-12-22","dow":"Di","text":"4 km EL + 3×2000 m in 3:12–3:15 (2 min Trab) + 4×400 m in 2:58 (200 m Trab) + 2 km AL","note":"","km":15.0,"type":"q"},{"d":"2026-12-23","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-24","dow":"Do","text":"4 km EL + 6 km T in 3:18 + 2 km AL","note":"Bei Bedarf auf Mi 23. vorziehen, dann dort PM streichen","km":12.0,"type":"q"},{"d":"2026-12-25","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2026-12-26","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2026-12-27","dow":"So","text":"30 km: 10 km locker → 5 km MRT 3:30 → 2 km locker → 5 km MRT 3:30 → 8 km locker","note":"Flaschen bei km 10, 15, 22","km":30.0,"type":"long"}]},{"n":4,"range":"28.12.–03.01.","km":109,"note":"Erholung","phase":"Wiederaufbau","mrt":0,"lr":"24 km locker","days":[{"d":"2026-12-28","dow":"Mo","text":"AM 12 km locker · PM 8 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2026-12-29","dow":"Di","text":"4 km EL + 10×400 m in 2:58–3:02 (200 m Trab) + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2026-12-30","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-31","dow":"Do","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2027-01-01","dow":"Fr","text":"4 km EL + 5 km T in 3:18 + 2 km AL","note":"","km":11.0,"type":"q"},{"d":"2027-01-02","dow":"Sa","text":"6 km sehr locker","note":"","km":6.0,"type":"easy"},{"d":"2027-01-03","dow":"So","text":"24 km locker, HF ≤ 138","note":"","km":24.0,"type":"long"}]},{"n":5,"range":"04.–10.01.","km":141,"note":"","phase":"Spezifik","mrt":15,"lr":"32 km, 3×5 km MRT","days":[{"d":"2027-01-04","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-05","dow":"Di","text":"4 km EL + 5×2000 m in 3:12–3:15 (2 min Trab) + 2 km AL","note":"","km":16.0,"type":"q"},{"d":"2027-01-06","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-07","dow":"Do","text":"4 km EL + 2×4 km T in 3:18 (3 min Trab) + 2 km AL","note":"","km":15.0,"type":"q"},{"d":"2027-01-08","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-09","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-01-10","dow":"So","text":"32 km: 8 km locker → 3×5 km MRT 3:29–3:30 (1 km locker dazwischen) → 7 km locker","note":"Flaschen bei km 8, 14, 20","km":32.0,"type":"long"}]},{"n":6,"range":"11.–17.01.","km":145,"note":"","phase":"Spezifik","mrt":15,"lr":"34 km, 10 + 5 km MRT","days":[{"d":"2027-01-11","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-12","dow":"Di","text":"4 km EL + 8×1000 m in 3:05–3:08 (400 m Trab) + 2 km AL","note":"","km":17.0,"type":"q"},{"d":"2027-01-13","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-14","dow":"Do","text":"4 km EL + 10 km Wechseltempo (1 km 3:20 / 1 km 3:40, ohne Pause) + 2 km AL","note":"","km":16.0,"type":"q"},{"d":"2027-01-15","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-16","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-01-17","dow":"So","text":"34 km: 8 km locker → 10 km MRT 3:29–3:30 am Stück → 2 km locker → 5 km MRT → 9 km locker","note":"Flaschen bei km 8, 13, 18, 20, 25","km":34.0,"type":"long"}]},{"n":7,"range":"18.–24.01.","km":118,"note":"Erholung + Kontrollpunkt 1","phase":"Spezifik","mrt":0,"lr":"10-km-Testlauf","days":[{"d":"2027-01-18","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-19","dow":"Di","text":"4 km EL + 4×1000 m in 3:08–3:10 (400 m Trab) + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2027-01-20","dow":"Mi","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-21","dow":"Do","text":"AM 14 km locker + 6 Steigerungen · PM 6 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2027-01-22","dow":"Fr","text":"10 km: 7 km locker, 3 km in 3:45, 6×100 m Steigerungen","note":"","km":10.0,"type":"easy"},{"d":"2027-01-23","dow":"Sa","text":"6 km sehr locker + 4 Steigerungen","note":"","km":6.0,"type":"easy"},{"d":"2027-01-24","dow":"So","text":"10-km-Testlauf: 5 km EL, 10 km Wettkampf oder vermessene flache Strecke, erste 5 km nicht schneller als zweite, 5 km AL","note":"","km":20.0,"type":"key"}]},{"n":8,"range":"25.–31.01.","km":147,"note":"Spitze + Generalprobe","phase":"Spezifik","mrt":16,"lr":"Generalprobe: 32 km, 16 km MRT","days":[{"d":"2027-01-25","dow":"Mo","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-26","dow":"Di","text":"4 km EL + 4×3000 m in 3:15–3:18 (3 min Trab) + 2 km AL","note":"Wenn nach dem Testlauf nicht erholt: 3×3000 m oder auf Mi schieben","km":21.0,"type":"q"},{"d":"2027-01-27","dow":"Mi","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-28","dow":"Do","text":"4 km EL + 6 km T in 3:18 + 4×200 m zügig + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2027-01-29","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-30","dow":"Sa","text":"6 km sehr locker + 4 Steigerungen","note":"","km":6.0,"type":"easy"},{"d":"2027-01-31","dow":"So","text":"Generalprobe 32 km: 10 km locker (letzte 2 km auf 3:45 beschleunigen) → 16 km MRT 3:28–3:30 am Stück → 6 km locker","note":"","km":32.0,"type":"key"}]},{"n":9,"range":"01.–07.02.","km":134,"note":"","phase":"Taper","mrt":8,"lr":"28 km, 8 km MRT","days":[{"d":"2027-02-01","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-02-02","dow":"Di","text":"4 km EL + 6×1000 m in 3:05–3:08 (400 m Trab) + 2 km AL","note":"","km":15.0,"type":"q"},{"d":"2027-02-03","dow":"Mi","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-02-04","dow":"Do","text":"4 km EL + 5 km T in 3:18 + 2 km AL","note":"","km":11.0,"type":"q"},{"d":"2027-02-05","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-02-06","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-02-07","dow":"So","text":"28 km: 10 km locker → 8 km MRT 3:28–3:30 am Stück → 10 km locker","note":"Flaschen bei km 10, 15","km":28.0,"type":"long"}]},{"n":10,"range":"08.–14.02.","km":102,"note":"","phase":"Taper","mrt":9,"lr":"20 km, 5 km MRT","days":[{"d":"2027-02-08","dow":"Mo","text":"AM 12 km locker · PM 6 km sehr locker","note":"","km":18.0,"type":"easy"},{"d":"2027-02-09","dow":"Di","text":"4 km EL + 5×1000 m in 3:10 (400 m Trab) + 2 km AL","note":"","km":13.0,"type":"q"},{"d":"2027-02-10","dow":"Mi","text":"AM 14 km locker · PM 6 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2027-02-11","dow":"Do","text":"4 km EL + 4 km MRT + 1 km locker + 2 km T + 2 km AL","note":"","km":13.0,"type":"q"},{"d":"2027-02-12","dow":"Fr","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2027-02-13","dow":"Sa","text":"6 km sehr locker","note":"","km":6.0,"type":"easy"},{"d":"2027-02-14","dow":"So","text":"20 km: 8 km locker → 5 km MRT → 7 km locker, 1 Flasche bei km 8","note":"","km":20.0,"type":"long"}]},{"n":11,"range":"15.–21.02.","km":51,"note":"","phase":"Taper","mrt":5,"lr":"Marathon Sevilla","days":[{"d":"2027-02-15","dow":"Mo","text":"10 km locker","note":"","km":10.0,"type":"easy"},{"d":"2027-02-16","dow":"Di","text":"4 km EL + 3×1000 m im MRT 3:28 (400 m Trab) + 2 km AL","note":"","km":10.0,"type":"q"},{"d":"2027-02-17","dow":"Mi","text":"10 km locker + 4 Steigerungen","note":"","km":10.0,"type":"easy"},{"d":"2027-02-18","dow":"Do","text":"4 km EL + 2 km MRT + 2 km AL","note":"Anreisetag Do oder Fr: Lauf vor dem Flug","km":8.0,"type":"q"},{"d":"2027-02-19","dow":"Fr","text":"8 km locker + 4 Steigerungen","note":"Startnummer mit FFP2 abholen; Carboloading beginnt","km":8.0,"type":"easy"},{"d":"2027-02-20","dow":"Sa","text":"5 km sehr locker + 3 Steigerungen","note":"Carboloading, Flaschen abgeben (falls Eigenverpflegung)","km":5.0,"type":"easy"},{"d":"2027-02-21","dow":"So","text":"Marathon Sevilla","note":"","km":42.2,"type":"race"}]}]},"B":{"weeks":[{"n":1,"range":"07.–13.12.","km":105,"note":"","phase":"Wiederaufbau","mrt":0,"lr":"26 km locker","days":[{"d":"2026-12-07","dow":"Mo","text":"10 km sehr locker, HF ≤ 130","note":"","km":10.0,"type":"easy"},{"d":"2026-12-08","dow":"Di","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2026-12-09","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-10","dow":"Do","text":"4 km EL + 5×1000 m in 3:12–3:15 (400 m Trab) + 2 km AL","note":"","km":13.0,"type":"q"},{"d":"2026-12-11","dow":"Fr","text":"14 km locker + 6 Steigerungen","note":"","km":14.0,"type":"easy"},{"d":"2026-12-12","dow":"Sa","text":"6 km sehr locker, HF ≤ 130","note":"","km":6.0,"type":"easy"},{"d":"2026-12-13","dow":"So","text":"26 km locker, 4:15–4:35/km, HF ≤ 140, mit Flüssigkeit","note":"","km":26.0,"type":"long"}]},{"n":2,"range":"14.–20.12.","km":122,"note":"","phase":"Wiederaufbau","mrt":0,"lr":"30 km locker","days":[{"d":"2026-12-14","dow":"Mo","text":"AM 12 km locker · PM 8 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2026-12-15","dow":"Di","text":"4 km EL + 6×1000 m in 3:08–3:12 (400 m Trab) + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2026-12-16","dow":"Mi","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-17","dow":"Do","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2026-12-18","dow":"Fr","text":"4 km EL + 8 km T in 3:18–3:20 + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2026-12-19","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2026-12-20","dow":"So","text":"30 km locker, letzte 6 km 3:50–4:00/km, mit Flüssigkeit","note":"Danach Entscheidung Plan A oder B","km":30.0,"type":"long"}]},{"n":3,"range":"21.–27.12.","km":139,"note":"erste MRT-Blöcke, Weihnachten","phase":"Wiederaufbau","mrt":15,"lr":"30 km, 3×5 km MRT","days":[{"d":"2026-12-21","dow":"Mo","text":"AM 14 km locker · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2026-12-22","dow":"Di","text":"4 km EL + 4×2000 m in 3:12–3:15 (2 min Trab) + 4×400 m in 2:58 (200 m Trab) + 2 km AL","note":"","km":17.0,"type":"q"},{"d":"2026-12-23","dow":"Mi","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2026-12-24","dow":"Do","text":"4 km EL + 8 km T in 3:18–3:20 + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2026-12-25","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2026-12-26","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2026-12-27","dow":"So","text":"30 km: 8 km locker → 3×5 km MRT 3:28–3:30 (je 1 km in 3:50 dazwischen) → 5 km locker","note":"Flaschen bei km 8, 14, 20","km":30.0,"type":"long"}]},{"n":4,"range":"28.12.–03.01.","km":112,"note":"Erholung","phase":"Wiederaufbau","mrt":0,"lr":"26 km locker","days":[{"d":"2026-12-28","dow":"Mo","text":"AM 12 km locker · PM 8 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2026-12-29","dow":"Di","text":"4 km EL + 10×400 m in 2:58–3:02 (200 m Trab) + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2026-12-30","dow":"Mi","text":"AM 18 km locker · PM 6 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2026-12-31","dow":"Do","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2027-01-01","dow":"Fr","text":"4 km EL + 6 km T in 3:18 + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2027-01-02","dow":"Sa","text":"6 km sehr locker","note":"","km":6.0,"type":"easy"},{"d":"2027-01-03","dow":"So","text":"26 km locker, HF ≤ 138, mit Flüssigkeit","note":"","km":26.0,"type":"long"}]},{"n":5,"range":"04.–10.01.","km":147,"note":"","phase":"Spezifik","mrt":20,"lr":"34 km, 4×5 km MRT","days":[{"d":"2027-01-04","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-05","dow":"Di","text":"4 km EL + 3×3000 m in 3:15–3:18 (3 min Trab) + 2×1000 m in 3:08 (400 m Trab) + 2 km AL","note":"","km":19.0,"type":"q"},{"d":"2027-01-06","dow":"Mi","text":"AM 20 km locker (mittellang) · PM 8 km sehr locker","note":"","km":28.0,"type":"easy"},{"d":"2027-01-07","dow":"Do","text":"4 km EL + 6 km T in 3:18 + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2027-01-08","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-09","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-01-10","dow":"So","text":"34 km: 8 km locker → 4×5 km MRT 3:28–3:29 (je 1 km in 3:50 dazwischen) → 3 km locker","note":"Flaschen bei km 8, 14, 20, 26","km":34.0,"type":"long"}]},{"n":6,"range":"11.–17.01.","km":151,"note":"","phase":"Spezifik","mrt":21,"lr":"35 km, 3×7 km MRT","days":[{"d":"2027-01-11","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-12","dow":"Di","text":"4 km EL + 6×1600 m in 5:04–5:08 (3:10–3:12/km, 400 m Trab) + 2 km AL","note":"","km":18.0,"type":"q"},{"d":"2027-01-13","dow":"Mi","text":"AM 22 km locker (mittellang) · PM 8 km sehr locker","note":"","km":30.0,"type":"easy"},{"d":"2027-01-14","dow":"Do","text":"4 km EL + 8 km T in 3:18–3:20 + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2027-01-15","dow":"Fr","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-16","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-01-17","dow":"So","text":"35 km: 8 km locker → 3×7 km MRT 3:28–3:29 (je 1 km in 3:50 dazwischen) → 4 km locker","note":"Flaschen bei km 8, 13, 18, 23, 28","km":35.0,"type":"long"}]},{"n":7,"range":"18.–24.01.","km":118,"note":"Erholung + Kontrollpunkt 1","phase":"Spezifik","mrt":0,"lr":"10-km-Testlauf","days":[{"d":"2027-01-18","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-01-19","dow":"Di","text":"4 km EL + 4×1000 m in 3:08–3:10 (400 m Trab) + 2 km AL","note":"","km":12.0,"type":"q"},{"d":"2027-01-20","dow":"Mi","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-21","dow":"Do","text":"AM 14 km locker + 6 Steigerungen · PM 6 km sehr locker","note":"","km":20.0,"type":"easy"},{"d":"2027-01-22","dow":"Fr","text":"10 km: 7 km locker, 3 km in 3:45, 6×100 m Steigerungen","note":"","km":10.0,"type":"easy"},{"d":"2027-01-23","dow":"Sa","text":"6 km sehr locker + 4 Steigerungen","note":"","km":6.0,"type":"easy"},{"d":"2027-01-24","dow":"So","text":"10-km-Testlauf: 5 km EL, 10 km Wettkampf oder vermessene flache Strecke, erste 5 km nicht schneller als zweite, 5 km AL","note":"","km":20.0,"type":"key"}]},{"n":8,"range":"25.–31.01.","km":155,"note":"Spitze + Generalprobe","phase":"Spezifik","mrt":20,"lr":"Generalprobe: 34 km, 20 km MRT","days":[{"d":"2027-01-25","dow":"Mo","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-26","dow":"Di","text":"AM 14 km locker + 6 Steigerungen · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-01-27","dow":"Mi","text":"4 km EL + 4×3000 m in 3:15–3:18 (3 min Trab) + 2 km AL","note":"","km":21.0,"type":"q"},{"d":"2027-01-28","dow":"Do","text":"AM 18 km locker · PM 8 km sehr locker","note":"","km":26.0,"type":"easy"},{"d":"2027-01-29","dow":"Fr","text":"AM 12 km locker + 6 Steigerungen · PM 6 km sehr locker","note":"","km":18.0,"type":"easy"},{"d":"2027-01-30","dow":"Sa","text":"8 km sehr locker + 4 Steigerungen","note":"","km":8.0,"type":"easy"},{"d":"2027-01-31","dow":"So","text":"Generalprobe 34 km: 8 km locker (letzte 2 km auf 3:45 beschleunigen) → 20 km MRT 3:27–3:29 am Stück → 6 km locker","note":"","km":34.0,"type":"key"}]},{"n":9,"range":"01.–07.02.","km":140,"note":"","phase":"Taper","mrt":12,"lr":"30 km, 12 km MRT","days":[{"d":"2027-02-01","dow":"Mo","text":"AM 16 km locker · PM 8 km sehr locker","note":"","km":24.0,"type":"easy"},{"d":"2027-02-02","dow":"Di","text":"AM 20 km locker (mittellang) · PM 8 km sehr locker","note":"","km":28.0,"type":"easy"},{"d":"2027-02-03","dow":"Mi","text":"4 km EL + 5×2000 m in 3:12–3:15 (2 min Trab) + 2 km AL","note":"","km":16.0,"type":"q"},{"d":"2027-02-04","dow":"Do","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2027-02-05","dow":"Fr","text":"AM 14 km locker · PM 8 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-02-06","dow":"Sa","text":"8 km sehr locker","note":"","km":8.0,"type":"easy"},{"d":"2027-02-07","dow":"So","text":"30 km: 10 km locker → 12 km MRT 3:27–3:28 am Stück → 8 km locker","note":"Flaschen bei km 10, 15, 20","km":30.0,"type":"long"}]},{"n":10,"range":"08.–14.02.","km":107,"note":"","phase":"Taper","mrt":11,"lr":"22 km, 6 km MRT","days":[{"d":"2027-02-08","dow":"Mo","text":"AM 12 km locker · PM 6 km sehr locker","note":"","km":18.0,"type":"easy"},{"d":"2027-02-09","dow":"Di","text":"4 km EL + 5×1000 m in 3:10 (400 m Trab) + 2 km AL","note":"","km":13.0,"type":"q"},{"d":"2027-02-10","dow":"Mi","text":"AM 16 km locker · PM 6 km sehr locker","note":"","km":22.0,"type":"easy"},{"d":"2027-02-11","dow":"Do","text":"4 km EL + 5 km MRT + 1 km locker + 2 km T + 2 km AL","note":"","km":14.0,"type":"q"},{"d":"2027-02-12","dow":"Fr","text":"12 km locker + 6 Steigerungen","note":"","km":12.0,"type":"easy"},{"d":"2027-02-13","dow":"Sa","text":"6 km sehr locker","note":"","km":6.0,"type":"easy"},{"d":"2027-02-14","dow":"So","text":"22 km: 8 km locker → 6 km MRT → 8 km locker, 1 Flasche bei km 8","note":"","km":22.0,"type":"long"}]},{"n":11,"range":"15.–21.02.","km":51,"note":"","phase":"Taper","mrt":5,"lr":"Marathon Sevilla","days":[{"d":"2027-02-15","dow":"Mo","text":"10 km locker","note":"","km":10.0,"type":"easy"},{"d":"2027-02-16","dow":"Di","text":"4 km EL + 3×1000 m im MRT 3:28 (400 m Trab) + 2 km AL","note":"","km":10.0,"type":"q"},{"d":"2027-02-17","dow":"Mi","text":"10 km locker + 4 Steigerungen","note":"","km":10.0,"type":"easy"},{"d":"2027-02-18","dow":"Do","text":"4 km EL + 2 km MRT + 2 km AL","note":"Anreisetag Do oder Fr: Lauf vor dem Flug","km":8.0,"type":"q"},{"d":"2027-02-19","dow":"Fr","text":"8 km locker + 4 Steigerungen","note":"Startnummer mit FFP2 abholen; Carboloading beginnt","km":8.0,"type":"easy"},{"d":"2027-02-20","dow":"Sa","text":"5 km sehr locker + 3 Steigerungen","note":"Carboloading, Flaschen abgeben (falls Eigenverpflegung)","km":5.0,"type":"easy"},{"d":"2027-02-21","dow":"So","text":"Marathon Sevilla","note":"","km":42.2,"type":"race"}]}]}};
+const START = '2026-12-07', RACE = '2027-02-21';
+const DOW = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const MON = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const TYPE = {easy:'Locker', q:'Qualität', long:'Long Run', key:'Kontrollpunkt', race:'Rennen'};
+const $ = id => document.getElementById(id);
+
+function toDate(s){ const a = s.split('-').map(Number); return new Date(a[0], a[1]-1, a[2], 12); }
+function iso(dt){ return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); }
+function shift(s, n){ const d = toDate(s); d.setDate(d.getDate() + n); return iso(d); }
+function diff(a, b){ return Math.round((toDate(b) - toDate(a)) / 864e5); }
+function clamp(s){ return s < START ? START : (s > RACE ? RACE : s); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(s){ return esc(s).replace(/(\d{1,2}:\d\d(?:–\d{1,2}:\d\d)?(?:\/km)?)/g, '<span class="pace">$1</span>'); }
+function km(v){ return String(v).replace('.', ','); }
+function longDate(s){ const d = toDate(s); return DOW[d.getDay()] + ', ' + d.getDate() + '. ' + MON[d.getMonth()] + ' ' + d.getFullYear(); }
+
+const TODAY = iso(new Date());
+const state = { plan: 'A', date: clamp(TODAY), view: 'tag' };
+try { const p = localStorage.getItem('sevilla-plan'); if (p === 'A' || p === 'B') state.plan = p; } catch (e) {}
+
+function find(planKey, date){
+  for (const w of PLANS[planKey].weeks) for (const d of w.days) if (d.d === date) return {week: w, day: d};
+  return null;
+}
+
+function sessionHtml(text){
+  const m = text.match(/^AM (.+) · PM (.+)$/);
+  const parts = m ? [{label:'Vormittag', t:m[1]}, {label:'Abend', t:m[2]}] : [{label:'', t:text}];
+  return parts.map(p => {
+    let head = '', body = p.t;
+    const i = body.indexOf(': ');
+    if (i > 0) { const h = body.slice(0, i); if (!h.includes('(') && !h.includes(' + ')) { head = h; body = body.slice(i + 2); } }
+    let steps = body.split(/ → | \+ /);
+    if (steps.length === 1 && head) steps = body.split(', ');
+    let out = '<div class="part">';
+    if (p.label) out += '<div class="label">' + p.label + '</div>';
+    if (head) out += '<div class="head">' + fmt(head) + '</div>';
+    if (steps.length === 1) out += '<p class="single">' + fmt(steps[0]) + '</p>';
+    else out += '<ol class="steps">' + steps.map(s => '<li><span>' + fmt(s) + '</span></li>').join('') + '</ol>';
+    return out + '</div>';
+  }).join('');
+}
+
+function renderStatus(){
+  let s;
+  if (TODAY < START) s = 'Planstart in ' + diff(TODAY, START) + ' Tagen · Rennen in ' + diff(TODAY, RACE) + ' Tagen';
+  else if (TODAY < RACE) s = 'Tag ' + (diff(START, TODAY) + 1) + ' von 77 · noch ' + diff(TODAY, RACE) + ' Tage bis zum Rennen';
+  else if (TODAY === RACE) s = 'Renntag';
+  else s = 'Marathon am 21.02.2027 gelaufen';
+  $('status').textContent = s;
+}
+
+function renderDay(){
+  const hit = find(state.plan, state.date), w = hit.week, d = hit.day;
+  const b = $('banner');
+  if (TODAY < START) { b.hidden = false; b.textContent = 'Der Plan beginnt am Montag, 7. Dezember. Bis dahin gilt der Japan-Plan. Du kannst hier schon durch alle Wochen blättern.'; }
+  else if (TODAY > RACE) { b.hidden = false; b.textContent = 'Der Block ist abgeschlossen. Die Wochen bleiben zum Nachlesen.'; }
+  else b.hidden = true;
+
+  $('wk-label').textContent = 'Woche ' + w.n + ' von 11 · ' + w.phase + (w.note ? ' · ' + w.note : '');
+  $('wk-range').textContent = w.range + ' · ' + w.km + ' km' + (w.n === 11 ? ' + Marathon' : '');
+  $('wk-prev').disabled = w.n === 1;
+  $('wk-next').disabled = w.n === 11;
+
+  $('strip').innerHTML = w.days.map(x =>
+    '<button type="button" class="chip t-' + x.type + (x.d === TODAY ? ' today' : '') + '" data-date="' + x.d + '" aria-pressed="' + (x.d === state.date) + '" aria-label="' + longDate(x.d) + ', ' + km(x.km) + ' km">' +
+    '<span class="dow">' + x.dow + '</span><span class="dd num">' + Number(x.d.slice(8)) + '</span><span class="ckm num">' + km(x.km) + '</span><span class="bar"></span></button>').join('');
+
+  const card = $('card');
+  card.className = 'card t-' + d.type;
+  card.innerHTML =
+    '<div class="cardtop"><div class="when"><span class="pill">' + TYPE[d.type] + (d.d === TODAY ? ' · heute' : '') + '</span>' +
+    '<div class="date">' + longDate(d.d) + '</div></div>' +
+    '<div class="bib"><span class="n num">' + km(d.km) + '</span><span class="u">km</span></div></div>' +
+    sessionHtml(d.text) +
+    (d.note ? '<div class="note">' + fmt(d.note) + '</div>' : '');
+
+  const ok = state.plan === 'A' ? 'B' : 'A', o = find(ok, state.date).day, box = $('other');
+  if (o.text === d.text && o.km === d.km) {
+    box.className = 'other same';
+    box.innerHTML = '<span>Plan ' + ok + ' sieht an diesem Tag dieselbe Einheit vor.</span>';
+  } else {
+    box.className = 'other';
+    box.innerHTML = '<div class="otop"><span class="label">Plan ' + ok + ' an diesem Tag</span><span class="num"><b>' + km(o.km) + ' km</b></span></div><span>' + fmt(o.text) + '</span>';
+  }
+
+  $('day-prev').disabled = state.date === START;
+  $('day-next').disabled = state.date === RACE;
+  const t = $('day-today');
+  t.textContent = TODAY < START ? 'Planstart' : (TODAY > RACE ? 'Renntag' : 'Heute');
+  t.disabled = state.date === clamp(TODAY);
+}
+
+function renderWeeks(){
+  const sum = k => {
+    const ws = PLANS[k].weeks; let total = 0, mrt = 0, peak = 0, lr = 0;
+    for (const w of ws) { total += w.km; mrt += w.mrt; peak = Math.max(peak, w.km); for (const d of w.days) if (d.type !== 'race' && d.dow === 'So') lr = Math.max(lr, d.km); }
+    return {total, mrt, peak, lr};
+  };
+  const a = sum('A'), b = sum('B');
+  const cls = k => state.plan === k ? ' act' : '';
+  const row = (name, va, vb) => '<tr><td>' + name + '</td><td class="r' + cls('A') + '">' + va + '</td><td class="r' + cls('B') + '">' + vb + '</td></tr>';
+  $('cmp').innerHTML = '<tr><th>Kennzahl</th><th class="r">Plan A</th><th class="r">Plan B</th></tr>' +
+    row('Gesamtumfang ohne Rennen', a.total.toLocaleString('de-DE') + ' km', b.total.toLocaleString('de-DE') + ' km') +
+    row('Spitzenwoche', a.peak + ' km', b.peak + ' km') +
+    row('Kilometer im Marathontempo', a.mrt + ' km', b.mrt + ' km') +
+    row('Längster MRT-Abschnitt', '16 km', '20 km') +
+    row('Längster Long Run', a.lr + ' km', b.lr + ' km') +
+    row('Ausfallrisiko', 'mittel', 'erhöht');
+  const cur = find(state.plan, state.date).week.n;
+  const line = (k, v) => '<div class="barline' + (state.plan === k ? ' on' : '') + '"><span>' + k + '</span><span class="track"><span class="fill" style="display:block;width:' + (v / 160 * 100).toFixed(1) + '%"></span></span><span class="v">' + v + '</span></div>';
+  $('wlist').innerHTML = PLANS.A.weeks.map((wa, i) => {
+    const wb = PLANS.B.weeks[i], w = state.plan === 'A' ? wa : wb;
+    return '<button type="button" class="wrow' + (wa.n === cur ? ' cur' : '') + '" data-week="' + wa.n + '" aria-label="Woche ' + wa.n + ' öffnen">' +
+      '<span><span class="wn num">W' + wa.n + '</span><br><span class="wr num">' + wa.range + '</span></span>' +
+      '<span class="bars">' + line('A', wa.km) + line('B', wb.km) + '</span>' +
+      '<span class="lr">' + esc(w.lr) + (w.mrt ? ' · ' + w.mrt + ' km MRT in der Woche' : '') + '</span></button>';
+  }).join('');
+}
+
+function render(){
+  for (const k of ['A','B']) $('plan-' + k.toLowerCase()).setAttribute('aria-pressed', String(state.plan === k));
+  for (const v of ['tag','wochen','regeln']) $('view-' + v).hidden = state.view !== v;
+  document.querySelectorAll('.tabs a').forEach(a => { if (a.dataset.view === state.view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  renderStatus();
+  if (state.view === 'tag') renderDay();
+  if (state.view === 'wochen') renderWeeks();
+}
+
+function go(date){ state.date = clamp(date); render(); }
+function readHash(){ const h = location.hash.replace('#', ''); state.view = ['tag','wochen','regeln'].includes(h) ? h : 'tag'; }
+
+document.querySelectorAll('.seg button').forEach(btn => btn.addEventListener('click', () => {
+  state.plan = btn.dataset.plan;
+  try { localStorage.setItem('sevilla-plan', state.plan); } catch (e) {}
+  render();
+}));
+$('strip').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) go(c.dataset.date); });
+$('wk-prev').addEventListener('click', () => go(shift(state.date, -7)));
+$('wk-next').addEventListener('click', () => go(shift(state.date, 7)));
+$('day-prev').addEventListener('click', () => go(shift(state.date, -1)));
+$('day-next').addEventListener('click', () => go(shift(state.date, 1)));
+$('day-today').addEventListener('click', () => go(TODAY));
+$('wlist').addEventListener('click', e => {
+  const r = e.target.closest('.wrow'); if (!r) return;
+  state.date = PLANS[state.plan].weeks[Number(r.dataset.week) - 1].days[0].d;
+  if (location.hash === '#tag') { state.view = 'tag'; render(); } else location.hash = 'tag';
+  window.scrollTo(0, 0);
+});
+document.addEventListener('keydown', e => {
+  if (state.view !== 'tag' || e.target.closest('input,textarea,select')) return;
+  if (e.key === 'ArrowLeft' && state.date > START) go(shift(state.date, -1));
+  if (e.key === 'ArrowRight' && state.date < RACE) go(shift(state.date, 1));
+});
+window.addEventListener('hashchange', () => { readHash(); render(); });
+readHash();
+render();
+</script>
+
+</body>
+</html>
